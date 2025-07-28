@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXORA | CYBER AUTH</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Custom Cyberpunk Styles */
+        :root {
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --dark-bg: #0d0221;
+        }
+        
+        body {
+            background-color: var(--dark-bg);
+            font-family: 'Rajdhani', sans-serif;
+            overflow: hidden;
+        }
+        
+        .cyber-text {
+            text-shadow: 0 0 10px var(--neon-blue),
+                         0 0 20px var(--neon-blue),
+                         0 0 40px var(--neon-blue);
+            animation: flicker 1.5s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 10px var(--neon-blue),
+                             0 0 20px var(--neon-blue),
+                             0 0 40px var(--neon-blue);
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+            }
+        }
+        
+        .glass-panel {
+            background: rgba(13, 2, 33, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(5, 217, 232, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(255, 42, 109, 0.37);
+        }
+        
+        .input-field {
+            background: rgba(5, 217, 232, 0.05);
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus {
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 10px rgba(255, 42, 109, 0.5);
+        }
+        
+        .neon-btn {
+            background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple));
+            box-shadow: 0 0 10px rgba(255, 42, 109, 0.5),
+                        0 0 20px rgba(211, 0, 197, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .neon-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 42, 109, 0.8),
+                        0 0 30px rgba(211, 0, 197, 0.5);
+        }
+        
+        .neon-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255,255,255,0) 45%,
+                rgba(255,255,255,0.8) 50%,
+                rgba(255,255,255,0) 55%
+            );
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(30deg); }
+            100% { transform: translateX(100%) rotate(30deg); }
+        }
+        
+        .scanline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(5, 217, 232, 0) 95%,
+                rgba(5, 217, 232, 0.1) 96%,
+                rgba(5, 217, 232, 0) 100%
+            );
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center text-white p-4">
+    <!-- Animated Grid Background -->
+    <div class="fixed inset-0 z-0 opacity-20" id="gridPattern"></div>
+    
+    <!-- Scanline Effect -->
+    <div class="scanline fixed inset-0 z-10"></div>
+    
+    <!-- Main Auth Container -->
+    <div class="glass-panel rounded-xl p-8 max-w-md w-full relative overflow-hidden z-20">
+        <!-- Cyberpunk Logo -->
+        <div class="text-center mb-8">
+            <h1 class="cyber-text text-5xl font-bold mb-2">NEXORA</h1>
+            <p class="text-neon-blue uppercase tracking-widest text-sm">SYSTEM ACCESS</p>
+        </div>
+        
+        <!-- Auth Forms -->
+        <div class="relative">
+            <!-- Login Form (Default) -->
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-neon-blue text-sm uppercase mb-1">USER ID</label>
+                    <input type="email" required 
+                           class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-400">
+                </div>
+                
+                <div>
+                    <label class="block text-neon-blue text-sm uppercase mb-1">AUTH CODE</label>
+                    <input type="password" required 
+                           class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-400">
+                </div>
+                
+                <button type="submit" class="neon-btn w-full py-3 rounded-lg font-bold uppercase tracking-wider">
+                    <span class="relative z-10">ACCESS GRANTED</span>
+                </button>
+            </form>
+            
+            <!-- Register Form (Hidden) -->
+            <form id="registerForm" class="space-y-6 hidden">
+                <div>
+                    <label class="block text-neon-blue text-sm uppercase mb-1">OPERATOR NAME</label>
+                    <input type="text" required 
+                           class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-400">
+                </div>
+                
+                <div>
+                    <label class="block text-neon-blue text-sm uppercase mb-1">SECURE EMAIL</label>
+                    <input type="email" required 
+                           class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-400">
+                </div>
+                
+                <div>
+                    <label class="block text-neon-blue text-sm uppercase mb-1">ENCRYPTION KEY</label>
+                    <input type="password" required 
+                           class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-400">
+                </div>
+                
+                <button type="submit" class="neon-btn w-full py-3 rounded-lg font-bold uppercase tracking-wider">
+                    <span class="relative z-10">ACTIVATE PROFILE</span>
+                </button>
+            </form>
+            
+            <!-- Form Toggle -->
+            <div class="text-center mt-6">
+                <a href="#" id="toggleAuthForm" 
+                   class="text-neon-blue hover:text-neon-pink text-sm uppercase tracking-wider">
+                   <i class="fas fa-user-shield mr-2"></i>
+                   <span>REQUEST CLEARANCE</span>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Status Indicator -->
+        <div id="statusIndicator" class="mt-6 text-center text-xs uppercase tracking-widest hidden">
+            <div class="inline-flex items-center">
+                <div class="w-2 h-2 rounded-full bg-neon-pink mr-2 pulse"></div>
+                <span>SYSTEM ACTIVE</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Audio Elements -->
+    <audio id="hoverSound" src="https://assets.mixkit.co/sfx/preview/mixkit-sci-fi-positive-interface-beep-218.mp3" preload="auto"></audio>
+    <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-quick-jump-arcade-game-239.mp3" preload="auto"></audio>
+    
+    <script>
+        // Initialize anime.js timeline
+        const timeline = anime.timeline({
+            easing: 'easeOutExpo',
+            duration: 750
+        });
+        
+        // Page load animations
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animate grid pattern
+            const grid = document.getElementById('gridPattern');
+            grid.innerHTML = generateGrid();
+            
+            // Main container animation
+            timeline
+                .add({
+                    targets: '.glass-panel',
+                    opacity: [0, 1],
+                    translateY: [50, 0]
+                })
+                .add({
+                    targets: '#loginForm div',
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    delay: anime.stagger(100)
+                }, '-=500');
+                
+            // Add hover sounds
+            document.querySelectorAll('button, a').forEach(el => {
+                el.addEventListener('mouseenter', () => {
+                    document.getElementById('hoverSound').currentTime = 0;
+                    document.getElementById('hoverSound').play();
+                });
+                
+                el.addEventListener('click', () => {
+                    document.getElementById('clickSound').currentTime = 0;
+                    document.getElementById('clickSound').play();
+                });
+            });
+            
+            // Form toggle
+            document.getElementById('toggleAuthForm').addEventListener('click', (e) => {
+                e.preventDefault();
+                document.getElementById('loginForm').classList.toggle('hidden');
+                document.getElementById('registerForm').classList.toggle('hidden');
+                
+                const isRegister = !document.getElementById('loginForm').classList.contains('hidden');
+                document.getElementById('toggleAuthForm').querySelector('span').textContent = 
+                    isRegister ? 'REQUEST CLEARANCE' : 'AUTHORIZED ACCESS';
+                    
+                anime({
+                    targets: isRegister ? '#registerForm div' : '#loginForm div',
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    delay: anime.stagger(100)
+                });
+            });
+            
+            // Form submission
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const status = document.getElementById('statusIndicator');
+                    status.classList.remove('hidden');
+                    
+                    anime({
+                        targets: '.pulse',
+                        scale: [1, 1.5, 1],
+                        opacity: [0.8, 1, 0.8],
+                        duration: 1000,
+                        loop: true
+                    });
+                    
+                    // Simulate auth processing
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                });
+            });
+        });
+        
+        // Generate cyberpunk grid pattern
+        function generateGrid() {
+            let gridHTML = '';
+            const size = 50;
+            const countX = Math.ceil(window.innerWidth / size) + 2;
+            const countY = Math.ceil(window.innerHeight / size) + 2;
+            
+            for (let y = 0; y < countY; y++) {
+                for (let x = 0; x < countX; x++) {
+                    gridHTML += `
+                        <div style="
+                            position: absolute;
+                            width: 1px;
+                            height: 1px;
+                            left: ${x * size}px;
+                            top: ${y * size}px;
+                            background: rgba(5, 217, 232, 0.3);
+                            box-shadow: 0 0 10px 1px rgba(5, 217, 232, 0.3);
+                        "></div>
+                    `;
+                }
+            }
+            
+            return gridHTML;
+        }
+    </script>
+</body>
+</html>
