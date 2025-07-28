@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXORA | SETTINGS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyberpink: '#ff2a6d',
+                        cyberblue: '#05d9e8',
+                        cyberpurple: '#d300c5',
+                        darkbg: '#0d0221',
+                    },
+                    fontFamily: {
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        orbitron: ['Orbitron', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Cyberpunk Base Styles */
+        body {
+            background-color: #0d0221;
+            font-family: 'Rajdhani', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* Cyberpunk Text Effects */
+        .cyber-text {
+            text-shadow: 0 0 10px #05d9e8,
+                         0 0 20px #05d9e8,
+                         0 0 40px #05d9e8;
+            animation: flicker 1.5s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 10px #05d9e8,
+                             0 0 20px #05d9e8,
+                             0 0 40px #05d9e8;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+            }
+        }
+        
+        /* Glass Morphism */
+        .glass-panel {
+            background: rgba(13, 2, 33, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(5, 217, 232, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(255, 42, 109, 0.37);
+        }
+        
+        /* Neon Button */
+        .neon-btn {
+            background: linear-gradient(90deg, #ff2a6d, #d300c5);
+            box-shadow: 0 0 10px rgba(255, 42, 109, 0.5),
+                        0 0 20px rgba(211, 0, 197, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .neon-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 42, 109, 0.8),
+                        0 0 30px rgba(211, 0, 197, 0.5);
+        }
+        
+        /* Toggle Switch */
+        .cyber-toggle {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+        
+        .cyber-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .cyber-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #1a1a2e;
+            transition: .4s;
+            border-radius: 34px;
+            border: 1px solid #05d9e8;
+        }
+        
+        .cyber-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 3px;
+            background-color: #05d9e8;
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 0 5px #05d9e8;
+        }
+        
+        input:checked + .cyber-slider {
+            background-color: #ff2a6d;
+            border-color: #ff2a6d;
+        }
+        
+        input:checked + .cyber-slider:before {
+            transform: translateX(28px);
+            background-color: white;
+            box-shadow: 0 0 10px white;
+        }
+        
+        /* Scanline Effect */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(5, 217, 232, 0) 95%,
+                rgba(5, 217, 232, 0.1) 96%,
+                rgba(5, 217, 232, 0) 100%
+            );
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        /* Navigation Items */
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            margin: 0 10px;
+            border-radius: 8px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item i {
+            width: 24px;
+            text-align: center;
+        }
+        
+        .nav-item span {
+            margin-left: 12px;
+        }
+        
+        .nav-item:hover {
+            background: rgba(5, 217, 232, 0.1);
+            color: #05d9e8;
+        }
+        
+        .nav-item.active {
+            background: rgba(5, 217, 232, 0.2);
+            color: #05d9e8;
+            border-left: 3px solid #05d9e8;
+        }
+        
+        /* Tab Navigation */
+        .cyber-tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(5, 217, 232, 0.3);
+        }
+        
+        .cyber-tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-tab:hover {
+            color: #05d9e8;
+        }
+        
+        .cyber-tab.active {
+            color: #05d9e8;
+            border-bottom-color: #05d9e8;
+        }
+        
+        /* Form Styles */
+        .cyber-input {
+            background: rgba(13, 2, 33, 0.5);
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .cyber-input:focus {
+            outline: none;
+            border-color: #05d9e8;
+            box-shadow: 0 0 10px rgba(5, 217, 232, 0.5);
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(5, 217, 232, 0.1);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(#ff2a6d, #d300c5);
+            border-radius: 10px;
+        }
+        
+        /* Voice Command Wave */
+        .voice-wave {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            height: 40px;
+        }
+        
+        .voice-wave span {
+            display: block;
+            width: 4px;
+            height: 10px;
+            background: #05d9e8;
+            border-radius: 2px;
+            animation: voice-wave 1.5s infinite ease-in-out;
+        }
+        
+        .voice-wave span:nth-child(1) { animation-delay: 0.1s; }
+        .voice-wave span:nth-child(2) { animation-delay: 0.2s; }
+        .voice-wave span:nth-child(3) { animation-delay: 0.3s; }
+        .voice-wave span:nth-child(4) { animation-delay: 0.4s; }
+        .voice-wave span:nth-child(5) { animation-delay: 0.5s; }
+        
+        @keyframes voice-wave {
+            0%, 100% { height: 10px; }
+            50% { height: 30px; }
+        }
+        
+        /* Setting Card */
+        .setting-card {
+            transition: all 0.3s ease;
+        }
+        
+        .setting-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(5, 217, 232, 0.2);
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Scanline Effect -->
+    <div class="scanline"></div>
+    
+    <!-- Main Layout -->
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <div class="glass-panel w-20 md:w-64 h-full flex-shrink-0 flex flex-col">
+            <!-- Logo -->
+            <div class="p-4 flex items-center justify-center md:justify-start">
+                <div class="w-10 h-10 rounded-full bg-cyberblue flex items-center justify-center">
+                    <i class="fas fa-bolt text-darkbg"></i>
+                </div>
+                <h1 class="text-xl font-bold ml-3 hidden md:block cyber-text">NEXORA</h1>
+            </div>
+            
+            <!-- Navigation -->
+                        <nav class="flex-1 mt-8">
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-home"></i>
+                    <span class="hidden md:inline">Dashboard</span>
+                </a>
+                <a href="devices.html" class="nav-item">
+                    <i class="fas fa-lightbulb"></i>
+                    <span class="hidden md:inline">Devices</span>
+                </a>
+                <a href="rooms.html" class="nav-item">
+                    <i class="fas fa-door-open"></i>
+                    <span class="hidden md:inline">Rooms</span>
+                </a>
+                <a href="schedule.html" class="nav-item ">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="hidden md:inline">Schedule</span>
+                </a>
+                <a href="analytics.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="hidden md:inline">Analytics</span>
+                </a>
+                <a href="settings.html" class="nav-item active">
+                    <i class="fas fa-cog"></i>
+                    <span class="hidden md:inline">Settings</span>
+                </a>
+            </nav>
+            
+            <!-- User Profile -->
+            <div class="p-4 border-t border-cyberblue border-opacity-20">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-full bg-cyberpink flex items-center justify-center">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="ml-3 hidden md:block">
+                        <div class="font-bold">Admin</div>
+                        <div class="text-xs text-cyberblue">SYSTEM OPERATOR</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar -->
+            <header class="glass-panel p-4 flex items-center justify-between">
+                <h2 class="text-xl font-bold">SETTINGS</h2>
+                
+                <div class="flex items-center space-x-4">
+                    <!-- Voice Command -->
+                    <button id="voiceCommand" class="neon-btn px-4 py-2 rounded-lg flex items-center">
+                        <i class="fas fa-microphone mr-2"></i>
+                        <span class="hidden md:inline">VOICE CONTROL</span>
+                    </button>
+                    
+                    <!-- Notifications -->
+                    <button class="w-10 h-10 rounded-full bg-darkbg flex items-center justify-center relative">
+                        <i class="fas fa-bell text-cyberblue"></i>
+                        <span class="absolute top-0 right-0 w-3 h-3 bg-cyberpink rounded-full"></span>
+                    </button>
+                </div>
+            </header>
+            
+            <!-- Settings Content -->
+            <main class="flex-1 overflow-y-auto p-4">
+                <!-- Settings Tabs -->
+                <div class="mb-6">
+                    <div class="cyber-tabs">
+                        <div class="cyber-tab active">System</div>
+                        <div class="cyber-tab">Account</div>
+                        <div class="cyber-tab">Security</div>
+                        <div class="cyber-tab">Notifications</div>
+                        <div class="cyber-tab">Integrations</div>
+                    </div>
+                </div>
+                
+                <!-- System Settings -->
+                <div class="glass-panel p-6 rounded-xl mb-8">
+                    <h3 class="text-lg font-bold mb-6">SYSTEM SETTINGS</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Theme Settings -->
+                        <div class="setting-card p-4 border border-cyberblue border-opacity-20 rounded-lg">
+                            <h4 class="font-bold mb-4">THEME</h4>
+                            <div class="flex items-center justify-between mb-4">
+                                <span>Dark Mode</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span>Neon Effects</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Scanline Effect</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox">
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- System Preferences -->
+                        <div class="setting-card p-4 border border-cyberblue border-opacity-20 rounded-lg">
+                            <h4 class="font-bold mb-4">PREFERENCES</h4>
+                            <div class="flex items-center justify-between mb-4">
+                                <span>Voice Control</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span>Energy Saving Mode</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox">
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Automatic Updates</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Date & Time -->
+                        <div class="setting-card p-4 border border-cyberblue border-opacity-20 rounded-lg">
+                            <h4 class="font-bold mb-4">DATE & TIME</h4>
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold mb-2">Time Zone</label>
+                                <select class="cyber-input w-full">
+                                    <option>UTC-05:00 Eastern Time</option>
+                                    <option>UTC-06:00 Central Time</option>
+                                    <option>UTC-07:00 Mountain Time</option>
+                                    <option>UTC-08:00 Pacific Time</option>
+                                </select>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>24-hour Format</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox">
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- System Info -->
+                        <div class="setting-card p-4 border border-cyberblue border-opacity-20 rounded-lg">
+                            <h4 class="font-bold mb-4">SYSTEM INFORMATION</h4>
+                            <div class="text-sm mb-2">
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-400">Nexora Version</span>
+                                    <span>v2.4.8</span>
+                                </div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-400">Last Updated</span>
+                                    <span>2023-06-15</span>
+                                </div>
+                                <div class="flex justify-between mb-1">
+                                    <span class="text-gray-400">System Uptime</span>
+                                    <span>14 days 6 hours</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">Connected Devices</span>
+                                    <span>24</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Account Settings -->
+                <div class="glass-panel p-6 rounded-xl mb-8">
+                    <h3 class="text-lg font-bold mb-6">ACCOUNT SETTINGS</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Profile Information -->
+                        <div class="setting-card p-4 border border-cyberblue border-opacity-20 rounded-lg">
+                            <h4 class="font-bold mb-4">PROFILE</h4>
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold mb-2">Name</label>
+                                <input type="text" class="cyber-input w-full" value="Admin User">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold mb-2">Email</label>
+                                <input type="email" class="cyber-input w-full" value="admin@nexora.com">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold mb-2">Phone</label>
+                                <input type="tel" class="cyber-input w-full" value="+1 (555) 123-4567">
+                            </div>
+                            <button class="neon-btn w-full py-2 rounded-lg">
+                                UPDATE PROFILE
+                            </button>
+                        </div>
+                        
+                        <!-- Change Password -->
+                        <div class="setting-card p-4 border border-cyberblue border-opacity-20 rounded-lg">
+                            <h4 class="font-bold mb-4">CHANGE PASSWORD</h4>
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold mb-2">Current Password</label>
+                                <input type="password" class="cyber-input w-full" placeholder="Enter current password">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold mb-2">New Password</label>
+                                <input type="password" class="cyber-input w-full" placeholder="Enter new password">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-sm font-bold mb-2">Confirm Password</label>
+                                <input type="password" class="cyber-input w-full" placeholder="Confirm new password">
+                            </div>
+                            <button class="neon-btn w-full py-2 rounded-lg">
+                                CHANGE PASSWORD
+                            </button>
+                        </div>
+                        
+                        <!-- Account Preferences -->
+                        <div class="setting-card p-4 border border-cyberblue border-opacity-20 rounded-lg">
+                            <h4 class="font-bold mb-4">PREFERENCES</h4>
+                            <div class="flex items-center justify-between mb-4">
+                                <span>Email Notifications</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span>SMS Alerts</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox">
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Push Notifications</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Account Security -->
+                        <div class="setting-card p-4 border border-cyberblue border-opacity-20 rounded-lg">
+                            <h4 class="font-bold mb-4">SECURITY</h4>
+                            <div class="flex items-center justify-between mb-4">
+                                <span>Two-Factor Authentication</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox">
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span>Biometric Login</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span>Activity Logging</span>
+                                <label class="cyber-toggle">
+                                    <input type="checkbox" checked>
+                                    <span class="cyber-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- System Actions -->
+                <div class="glass-panel p-6 rounded-xl">
+                    <h3 class="text-lg font-bold mb-6">SYSTEM ACTIONS</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Restart System -->
+                        <div class="setting-card p-4 border border-cyberblue border-opacity-20 rounded-lg text-center">
+                            <div class="w-12 h-12 rounded-full bg-cyberblue bg-opacity-20 flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-sync-alt text-cyberblue text-xl"></i>
+                            </div>
+                            <h4 class="font-bold mb-2">RESTART SYSTEM</h4>
+                            <p class="text-sm text-gray-400 mb-4">Restart the Nexora controller</p>
+                            <button class="neon-btn w-full py-2 rounded-lg">
+                                RESTART
+                            </button>
+                        </div>
+                        
+                        <!-- Backup Settings -->
+                        <div class="setting-card p-4 border border-cyberblue border-opacity-20 rounded-lg text-center">
+                            <div class="w-12 h-12 rounded-full bg-cyberblue bg-opacity-20 flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-database text-cyberblue text-xl"></i>
+                            </div>
+                            <h4 class="font-bold mb-2">BACKUP SETTINGS</h4>
+                            <p class="text-sm text-gray-400 mb-4">Create a backup of all settings</p>
+                            <button class="neon-btn w-full py-2 rounded-lg">
+                                CREATE BACKUP
+                            </button>
+                        </div>
+                        
+                        <!-- Factory Reset -->
+                        <div class="setting-card p-4 border border-red-500 border-opacity-20 rounded-lg text-center">
+                            <div class="w-12 h-12 rounded-full bg-red-500 bg-opacity-20 flex items-center justify-center mx-auto mb-3">
+                                <i class="fas fa-exclamation-triangle text-red-500 text-xl"></i>
+                            </div>
+                            <h4 class="font-bold mb-2">FACTORY RESET</h4>
+                            <p class="text-sm text-gray-400 mb-4">Reset all settings to default</p>
+                            <button class="w-full py-2 bg-red-500 bg-opacity-20 text-red-500 rounded-lg hover:bg-opacity-30 transition">
+                                RESET SYSTEM
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Voice Command Modal -->
+    <div id="voiceModal" class="fixed inset-0 flex items-center justify-center z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-70"></div>
+        <div class="glass-panel p-8 rounded-xl max-w-md w-full relative z-10">
+            <h3 class="text-xl font-bold mb-6 text-center">VOICE COMMAND</h3>
+            <div class="voice-wave flex justify-center mb-6">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <div id="voiceFeedback" class="text-center mb-6 min-h-8"></div>
+            <button id="stopVoice" class="neon-btn w-full py-3 rounded-lg">
+                STOP LISTENING
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        // Voice Command System
+        const initVoiceControl = () => {
+            const voiceModal = document.getElementById('voiceModal');
+            const voiceFeedback = document.getElementById('voiceFeedback');
+            const voiceBtn = document.getElementById('voiceCommand');
+            const stopBtn = document.getElementById('stopVoice');
+            
+            let recognition;
+            
+            voiceBtn.addEventListener('click', () => {
+                voiceModal.classList.remove('hidden');
+                startVoiceRecognition();
+            });
+            
+            stopBtn.addEventListener('click', () => {
+                if (recognition) recognition.stop();
+                voiceModal.classList.add('hidden');
+            });
+            
+            const startVoiceRecognition = () => {
+                recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+                recognition.continuous = true;
+                recognition.interimResults = true;
+                
+                recognition.onstart = () => {
+                    voiceFeedback.innerHTML = '<div class="text-cyberblue">Listening...</div>';
+                };
+                
+                recognition.onresult = (event) => {
+                    const last = event.results.length - 1;
+                    const transcript = event.results[last][0].transcript.toLowerCase();
+                    
+                    voiceFeedback.innerHTML = `<div class="text-white">"${transcript}"</div>`;
+                    
+                    // Process commands
+                    if (transcript.includes('dark mode')) {
+                        const toggle = document.querySelector('.setting-card:nth-child(1) .cyber-toggle input');
+                        if (toggle) {
+                            toggle.checked = !transcript.includes('off');
+                            toggle.dispatchEvent(new Event('change'));
+                        }
+                    } else if (transcript.includes('notifications')) {
+                        const toggle = document.querySelector('.setting-card:nth-child(4) .cyber-toggle input');
+                        if (toggle) {
+                            toggle.checked = !transcript.includes('off');
+                            toggle.dispatchEvent(new Event('change'));
+                        }
+                    }
+                };
+                
+                recognition.onerror = (event) => {
+                    voiceFeedback.innerHTML = `<div class="text-cyberpink">Error: ${event.error}</div>`;
+                };
+                
+                recognition.start();
+            };
+        };
+        
+        // Initialize everything
+        document.addEventListener('DOMContentLoaded', () => {
+            initVoiceControl();
+        });
+    </script>
+</body>
+</html>

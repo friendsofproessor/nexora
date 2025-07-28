@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXORA | INSTALLER AUTH</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyberpink: '#ff2a6d',
+                        cyberblue: '#05d9e8',
+                        cyberpurple: '#d300c5',
+                        darkbg: '#0d0221',
+                    },
+                    fontFamily: {
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        orbitron: ['Orbitron', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Cyberpunk Base Styles */
+        body {
+            background-color: #0d0221;
+            font-family: 'Rajdhani', sans-serif;
+            color: white;
+            overflow-x: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Cyberpunk Text Effects */
+        .cyber-text {
+            text-shadow: 0 0 10px #05d9e8,
+                         0 0 20px #05d9e8,
+                         0 0 40px #05d9e8;
+            animation: flicker 1.5s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 10px #05d9e8,
+                             0 0 20px #05d9e8,
+                             0 0 40px #05d9e8;
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+            }
+        }
+        
+        /* Glass Morphism */
+        .glass-panel {
+            background: rgba(13, 2, 33, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(5, 217, 232, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(255, 42, 109, 0.37);
+        }
+        
+        /* Neon Button */
+        .neon-btn {
+            background: linear-gradient(90deg, #ff2a6d, #d300c5);
+            box-shadow: 0 0 10px rgba(255, 42, 109, 0.5),
+                        0 0 20px rgba(211, 0, 197, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .neon-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 42, 109, 0.8),
+                        0 0 30px rgba(211, 0, 197, 0.5);
+        }
+        
+        /* Scanline Effect */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                to bottom,
+                rgba(5, 217, 232, 0) 95%,
+                rgba(5, 217, 232, 0.1) 96%,
+                rgba(5, 217, 232, 0) 100%
+            );
+            animation: scan 8s linear infinite;
+            pointer-events: none;
+            z-index: 100;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        
+        /* Input Fields */
+        .cyber-input {
+            background: rgba(13, 2, 33, 0.5);
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            color: white;
+            transition: all 0.3s;
+        }
+        
+        .cyber-input:focus {
+            outline: none;
+            border-color: #05d9e8;
+            box-shadow: 0 0 10px rgba(5, 217, 232, 0.5);
+        }
+        
+        /* Auth Container */
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* Tabs */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 1.5rem;
+        }
+        
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.75rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .auth-tab.active {
+            border-bottom-color: #05d9e8;
+            color: #05d9e8;
+        }
+        
+        /* Error Message */
+        .error-message {
+            color: #ff2a6d;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Success Message */
+        .success-message {
+            color: #05d9e8;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="relative">
+    <!-- Scanline Effect -->
+    <div class="scanline"></div>
+    
+    <!-- Auth Container -->
+    <div class="auth-container glass-panel rounded-xl">
+        <!-- Logo -->
+        <div class="flex justify-center mb-6">
+            <div class="w-16 h-16 rounded-full bg-cyberblue flex items-center justify-center">
+                <i class="fas fa-bolt text-darkbg text-2xl"></i>
+            </div>
+        </div>
+        
+        <h1 class="text-2xl font-bold text-center mb-8 cyber-text">NEXORA INSTALLER</h1>
+        
+        <!-- Tabs -->
+        <div class="auth-tabs">
+            <div id="loginTab" class="auth-tab active" onclick="switchTab('login')">LOGIN</div>
+            <div id="registerTab" class="auth-tab" onclick="switchTab('register')">REGISTER</div>
+        </div>
+        
+        <!-- Login Form -->
+        <div id="loginForm">
+            <div class="mb-4">
+                <label class="block text-sm mb-2">Employee ID</label>
+                <input type="text" id="loginEmployeeId" class="w-full cyber-input rounded-lg px-4 py-3" placeholder="NXR-0000">
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm mb-2">Password</label>
+                <input type="password" id="loginPassword" class="w-full cyber-input rounded-lg px-4 py-3" placeholder="••••••••">
+            </div>
+            <button onclick="login()" class="neon-btn w-full py-3 rounded-lg mb-2">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                LOGIN
+            </button>
+            <div id="loginError" class="error-message"></div>
+        </div>
+        
+        <!-- Register Form -->
+        <div id="registerForm" class="hidden">
+            <div class="mb-4">
+                <label class="block text-sm mb-2">Full Name</label>
+                <input type="text" id="registerName" class="w-full cyber-input rounded-lg px-4 py-3" placeholder="John Smith">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm mb-2">Employee ID</label>
+                <input type="text" id="registerEmployeeId" class="w-full cyber-input rounded-lg px-4 py-3" placeholder="NXR-0000">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm mb-2">Email</label>
+                <input type="email" id="registerEmail" class="w-full cyber-input rounded-lg px-4 py-3" placeholder="john@nexora.com">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm mb-2">Password</label>
+                <input type="password" id="registerPassword" class="w-full cyber-input rounded-lg px-4 py-3" placeholder="••••••••">
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm mb-2">Confirm Password</label>
+                <input type="password" id="registerConfirmPassword" class="w-full cyber-input rounded-lg px-4 py-3" placeholder="••••••••">
+            </div>
+            <button onclick="register()" class="neon-btn w-full py-3 rounded-lg mb-2">
+                <i class="fas fa-user-plus mr-2"></i>
+                REGISTER
+            </button>
+            <div id="registerError" class="error-message"></div>
+            <div id="registerSuccess" class="success-message"></div>
+        </div>
+    </div>
+
+    <script>
+        // Switch between login and register tabs
+        function switchTab(tab) {
+            if (tab === 'login') {
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
+                document.getElementById('loginTab').classList.add('active');
+                document.getElementById('registerTab').classList.remove('active');
+            } else {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('registerForm').classList.remove('hidden');
+                document.getElementById('loginTab').classList.remove('active');
+                document.getElementById('registerTab').classList.add('active');
+                // Clear messages when switching tabs
+                document.getElementById('registerError').textContent = '';
+                document.getElementById('registerSuccess').textContent = '';
+            }
+        }
+
+        // Validate Employee ID format (NXR-XXXX)
+        function isValidEmployeeId(id) {
+            const regex = /^NXR-\d{4}$/;
+            return regex.test(id);
+        }
+
+        // Login function
+        function login() {
+            const employeeId = document.getElementById('loginEmployeeId').value;
+            const password = document.getElementById('loginPassword').value;
+            const errorElement = document.getElementById('loginError');
+            
+            // Basic validation
+            if (!employeeId || !password) {
+                errorElement.textContent = 'Please fill in all fields';
+                return;
+            }
+            
+            if (!isValidEmployeeId(employeeId)) {
+                errorElement.textContent = 'Invalid Employee ID format (NXR-0000)';
+                return;
+            }
+            
+            // Simulate login (replace with actual API call)
+            errorElement.textContent = '';
+            errorElement.style.color = '#05d9e8';
+            errorElement.textContent = 'Authenticating...';
+            
+            setTimeout(() => {
+                // Mock authentication
+                if (employeeId === 'NXR-1234' && password === 'nexora123') {
+                    errorElement.textContent = 'Login successful! Redirecting...';
+                    // Redirect to installer portal after successful login
+                    setTimeout(() => {
+                        window.location.href = 'installer-portal.html'; // Replace with your actual portal page
+                    }, 1000);
+                } else {
+                    errorElement.style.color = '#ff2a6d';
+                    errorElement.textContent = 'Invalid credentials';
+                }
+            }, 1500);
+        }
+
+        // Register function
+        function register() {
+            const name = document.getElementById('registerName').value;
+            const employeeId = document.getElementById('registerEmployeeId').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            const errorElement = document.getElementById('registerError');
+            const successElement = document.getElementById('registerSuccess');
+            
+            // Clear previous messages
+            errorElement.textContent = '';
+            successElement.textContent = '';
+            
+            // Validation
+            if (!name || !employeeId || !email || !password || !confirmPassword) {
+                errorElement.textContent = 'Please fill in all fields';
+                return;
+            }
+            
+            if (!isValidEmployeeId(employeeId)) {
+                errorElement.textContent = 'Invalid Employee ID format (NXR-0000)';
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                errorElement.textContent = 'Passwords do not match';
+                return;
+            }
+            
+            if (password.length < 8) {
+                errorElement.textContent = 'Password must be at least 8 characters';
+                return;
+            }
+            
+            // Simulate registration (replace with actual API call)
+            errorElement.textContent = '';
+            errorElement.style.color = '#05d9e8';
+            errorElement.textContent = 'Registering account...';
+            
+            setTimeout(() => {
+                // Mock registration success
+                errorElement.textContent = '';
+                successElement.textContent = 'Registration successful! You can now login.';
+                
+                // Clear form
+                document.getElementById('registerName').value = '';
+                document.getElementById('registerEmployeeId').value = '';
+                document.getElementById('registerEmail').value = '';
+                document.getElementById('registerPassword').value = '';
+                document.getElementById('registerConfirmPassword').value = '';
+                
+                // Switch to login tab after 2 seconds
+                setTimeout(() => {
+                    switchTab('login');
+                }, 2000);
+            }, 2000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add event listeners for Enter key
+            document.getElementById('loginPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') login();
+            });
+            
+            document.getElementById('registerConfirmPassword').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') register();
+            });
+        });
+    </script>
+</body>
+</html>

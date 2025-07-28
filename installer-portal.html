@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXORA | INSTALLER PORTAL</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        cyberpink: '#ff2a6d',
+                        cyberblue: '#05d9e8',
+                        cyberpurple: '#d300c5',
+                        darkbg: '#0d0221',
+                    },
+                    fontFamily: {
+                        rajdhani: ['Rajdhani', 'sans-serif'],
+                        orbitron: ['Orbitron', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Cyberpunk Base Styles */
+        body {
+            background-color: #0d0221;
+            font-family: 'Rajdhani', sans-serif;
+            color: white;
+            overflow-x: hidden;
+        }
+        
+        /* Glass Morphism */
+        .glass-panel {
+            background: rgba(13, 2, 33, 0.25);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(5, 217, 232, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(255, 42, 109, 0.37);
+        }
+        
+        /* Terminal Styles */
+        .terminal {
+            background-color: rgba(0, 0, 0, 0.7);
+            border: 1px solid #05d9e8;
+            font-family: monospace;
+            height: 200px;
+            overflow-y: auto;
+        }
+        
+        .log-success { color: #00ff00; }
+        .log-error { color: #ff2a6d; }
+        .log-info { color: #05d9e8; }
+        .log-warning { color: #ffcc00; }
+    </style>
+</head>
+<body class="relative">
+    <!-- Main Container -->
+    <div class="min-h-screen flex">
+        <!-- Sidebar -->
+        <div class="glass-panel w-20 md:w-64 h-full flex-shrink-0 p-4">
+            <div class="flex items-center mb-10">
+                <div class="w-10 h-10 rounded-full bg-cyberblue flex items-center justify-center">
+                    <i class="fas fa-bolt text-darkbg"></i>
+                </div>
+                <h1 class="text-xl font-bold ml-3 hidden md:block">NEXORA</h1>
+            </div>
+            <nav>
+                <a href="#" class="block py-3 px-2 mb-2 rounded-lg bg-cyberblue bg-opacity-20">
+                    <i class="fas fa-microchip mr-2"></i>
+                    <span class="hidden md:inline">Devices</span>
+                </a>
+                <a href="#" class="block py-3 px-2 mb-2 rounded-lg hover:bg-cyberblue hover:bg-opacity-10">
+                    <i class="fas fa-users-cog mr-2"></i>
+                    <span class="hidden md:inline">Installers</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex-1 p-6">
+            <h2 class="text-2xl font-bold mb-6">NODEMCU INSTALLATION PORTAL</h2>
+            
+            <!-- Device Setup -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Connection Panel -->
+                <div class="glass-panel p-6 rounded-xl lg:col-span-2">
+                    <div class="mb-6">
+                        <h3 class="font-bold mb-4">1. DEVICE CONNECTION</h3>
+                        <div class="flex flex-wrap gap-4 mb-4">
+                            <button id="scanBtn" class="neon-btn px-6 py-3 rounded-lg flex-1 min-w-[200px]">
+                                <i class="fas fa-search mr-2"></i> SCAN DEVICES
+                            </button>
+                            <select id="portSelect" class="bg-darkbg border border-cyberblue rounded-lg px-4 py-3 flex-1 min-w-[200px]" disabled>
+                                <option value="">No ports available</option>
+                            </select>
+                        </div>
+                        <div class="flex justify-center">
+                            <div id="connectionStatus" class="inline-flex items-center px-4 py-2 rounded-full bg-darkbg">
+                                <span class="w-3 h-3 rounded-full bg-red-500 mr-2"></span>
+                                <span>DISCONNECTED</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Firmware Panel -->
+                    <div class="mb-6">
+                        <h3 class="font-bold mb-4">2. FIRMWARE FLASH</h3>
+                        <div class="flex flex-wrap gap-4 mb-4">
+                            <select id="firmwareSelect" class="bg-darkbg border border-cyberblue rounded-lg px-4 py-3 flex-1 min-w-[200px]">
+                                <option value="default">Default Firmware</option>
+                                <option value="custom">Custom Firmware</option>
+                            </select>
+                            <button id="flashBtn" class="neon-btn px-6 py-3 rounded-lg flex-1 min-w-[200px]" disabled>
+                                <i class="fas fa-upload mr-2"></i> FLASH DEVICE
+                            </button>
+                        </div>
+                        <div id="progressContainer" class="hidden">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>Progress:</span>
+                                <span id="progressText">0%</span>
+                            </div>
+                            <div class="w-full bg-darkbg rounded-full h-2.5">
+                                <div id="progressBar" class="bg-cyberblue h-2.5 rounded-full" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Configuration Panel -->
+                    <div>
+                        <h3 class="font-bold mb-4">3. DEVICE CONFIGURATION</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="block text-sm mb-1">Device Name</label>
+                                <input type="text" id="deviceName" class="w-full bg-darkbg border border-cyberblue rounded-lg px-4 py-3" placeholder="Living Room Light">
+                            </div>
+                            <div>
+                                <label class="block text-sm mb-1">Location</label>
+                                <input type="text" id="deviceLocation" class="w-full bg-darkbg border border-cyberblue rounded-lg px-4 py-3" placeholder="Main Hall">
+                            </div>
+                        </div>
+                        <button id="saveBtn" class="neon-btn w-full py-3 rounded-lg" disabled>
+                            <i class="fas fa-save mr-2"></i> SAVE CONFIGURATION
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Terminal Panel -->
+                <div class="glass-panel p-6 rounded-xl">
+                    <h3 class="font-bold mb-4">SYSTEM LOG</h3>
+                    <div id="terminal" class="terminal p-3 mb-4">
+                        <p class="log-info">> Nexora Installer v2.0 initialized</p>
+                        <p class="log-info">> Ready for device connection</p>
+                    </div>
+                    <div class="flex justify-between">
+                        <button id="clearLogBtn" class="px-4 py-2 rounded-lg border border-cyberblue">
+                            <i class="fas fa-trash mr-2"></i> CLEAR LOG
+                        </button>
+                        <button id="copyLogBtn" class="px-4 py-2 rounded-lg border border-cyberblue">
+                            <i class="fas fa-copy mr-2"></i> COPY LOG
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registered Devices Table -->
+            <div class="glass-panel p-6 rounded-xl">
+                <h3 class="font-bold mb-4">REGISTERED DEVICES</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-cyberblue border-opacity-30">
+                                <th class="text-left pb-2">Device ID</th>
+                                <th class="text-left pb-2">Name</th>
+                                <th class="text-left pb-2">Location</th>
+                                <th class="text-left pb-2">Status</th>
+                                <th class="text-left pb-2">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="devicesTable">
+                            <!-- Devices will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backend Simulation Script -->
+    <script>
+        // DOM Elements
+        const scanBtn = document.getElementById('scanBtn');
+        const portSelect = document.getElementById('portSelect');
+        const flashBtn = document.getElementById('flashBtn');
+        const saveBtn = document.getElementById('saveBtn');
+        const terminal = document.getElementById('terminal');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+        const devicesTable = document.getElementById('devicesTable');
+
+        // Mock device database
+        const registeredDevices = [
+            { id: 'NX-7A3B', name: 'Living Room Light', location: 'Main Hall', status: 'active' },
+            { id: 'NX-2C9D', name: 'Kitchen AC', location: 'Kitchen', status: 'inactive' }
+        ];
+
+        // Log to terminal
+        function log(message, type = 'info') {
+            const line = document.createElement('p');
+            line.className = `log-${type}`;
+            line.textContent = `> ${message}`;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const statusDot = connectionStatus.querySelector('span:first-child');
+            const statusText = connectionStatus.querySelector('span:last-child');
+            
+            if (connected) {
+                statusDot.className = 'w-3 h-3 rounded-full bg-green-500 mr-2';
+                statusText.textContent = 'CONNECTED';
+                connectionStatus.className = 'inline-flex items-center px-4 py-2 rounded-full bg-darkbg border border-green-500';
+            } else {
+                statusDot.className = 'w-3 h-3 rounded-full bg-red-500 mr-2';
+                statusText.textContent = 'DISCONNECTED';
+                connectionStatus.className = 'inline-flex items-center px-4 py-2 rounded-full bg-darkbg';
+            }
+        }
+
+        // Simulate port scanning
+        scanBtn.addEventListener('click', () => {
+            log('Scanning for NodeMCU devices...');
+            scanBtn.disabled = true;
+            
+            setTimeout(() => {
+                // Mock found ports
+                portSelect.innerHTML = `
+                    <option value="">Select a port</option>
+                    <option value="/dev/ttyUSB0">NodeMCU (USB0)</option>
+                    <option value="/dev/ttyUSB1">NodeMCU (USB1)</option>
+                `;
+                portSelect.disabled = false;
+                log('Found 2 NodeMCU devices');
+                scanBtn.disabled = false;
+            }, 1500);
+        });
+
+        // Port selection handler
+        portSelect.addEventListener('change', (e) => {
+            if (e.target.value) {
+                log(`Selected port: ${e.target.value}`);
+                updateConnectionStatus(true);
+                flashBtn.disabled = false;
+            } else {
+                updateConnectionStatus(false);
+                flashBtn.disabled = true;
+            }
+        });
+
+        // Firmware flashing
+        flashBtn.addEventListener('click', () => {
+            const firmware = document.getElementById('firmwareSelect').value;
+            log(`Starting firmware flash: ${firmware}`);
+            progressContainer.classList.remove('hidden');
+            flashBtn.disabled = true;
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+                
+                progressBar.style.width = `${progress}%`;
+                progressText.textContent = `${Math.floor(progress)}%`;
+                
+                if (progress === 100) {
+                    clearInterval(interval);
+                    log('Firmware flash completed successfully!', 'success');
+                    saveBtn.disabled = false;
+                }
+            }, 300);
+        });
+
+        // Save configuration
+        saveBtn.addEventListener('click', () => {
+            const name = document.getElementById('deviceName').value;
+            const location = document.getElementById('deviceLocation').value;
+            
+            if (!name || !location) {
+                log('Error: Please fill all fields', 'error');
+                return;
+            }
+            
+            log(`Saving configuration: ${name} in ${location}`);
+            
+            setTimeout(() => {
+                // Generate random device ID
+                const deviceId = `NX-${Math.random().toString(16).substr(2, 4).toUpperCase()}`;
+                registeredDevices.push({
+                    id: deviceId,
+                    name: name,
+                    location: location,
+                    status: 'active'
+                });
+                
+                log(`Device ${deviceId} registered successfully!`, 'success');
+                updateDevicesTable();
+                
+                // Reset form
+                document.getElementById('deviceName').value = '';
+                document.getElementById('deviceLocation').value = '';
+                saveBtn.disabled = true;
+                flashBtn.disabled = true;
+                portSelect.value = '';
+                updateConnectionStatus(false);
+                progressContainer.classList.add('hidden');
+                progressBar.style.width = '0%';
+                progressText.textContent = '0%';
+            }, 1000);
+        });
+
+        // Update devices table
+        function updateDevicesTable() {
+            devicesTable.innerHTML = registeredDevices.map(device => `
+                <tr class="border-b border-cyberblue border-opacity-10 hover:bg-cyberblue hover:bg-opacity-10">
+                    <td class="py-3">${device.id}</td>
+                    <td>${device.name}</td>
+                    <td>${device.location}</td>
+                    <td>
+                        <span class="px-2 py-1 rounded-full text-xs ${
+                            device.status === 'active' 
+                            ? 'bg-green-900 text-green-300' 
+                            : 'bg-red-900 text-red-300'
+                        }">
+                            ${device.status.toUpperCase()}
+                        </span>
+                    </td>
+                    <td>
+                        <button class="px-3 py-1 rounded-lg border border-cyberblue text-sm mr-2">
+                            <i class="fas fa-edit mr-1"></i> Edit
+                        </button>
+                        <button class="px-3 py-1 rounded-lg border border-cyberpink text-sm">
+                            <i class="fas fa-trash mr-1"></i> Remove
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDevicesTable();
+            
+            // Clear log button
+            document.getElementById('clearLogBtn').addEventListener('click', () => {
+                terminal.innerHTML = '<p class="log-info">> Log cleared</p>';
+            });
+            
+            // Copy log button
+            document.getElementById('copyLogBtn').addEventListener('click', () => {
+                navigator.clipboard.writeText(terminal.textContent);
+                log('Log copied to clipboard', 'success');
+            });
+        });
+    </script>
+</body>
+</html>
